@@ -1,0 +1,39 @@
+service: product-service
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-central-1
+  stage: dev
+  httpApi:
+    cors: true
+
+package:
+ patterns:
+   - "*.js"
+
+functions:
+  ping:
+    handler: handler.ping
+    events:
+     - httpApi:
+         path: /ping
+         method: get
+  getProductById:
+    handler: handler.getProductById
+    events:
+      - http:
+          path: products/{productId}
+          method: get
+          request:
+            parameters:
+              paths:
+                productId: true
+  getAllProducts:
+    handler: handler.getAllProducts
+    events:
+      - http:
+          path: products
+          method: get
+
