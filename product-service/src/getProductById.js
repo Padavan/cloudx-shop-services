@@ -1,20 +1,18 @@
 import { errorResponse, successResponse } from "./utils/response.js";
-import { mockProductList } from "./mockData.js";
 
-export const getProductById = async (event) => {
+export const getProductById = (dbService) => async (event) => {
   try {
 
     const { productId = '' } = event.pathParameters;
 
-    const product = mockProductList.find((p) => productId === p.id);
+    const product = await dbService.getProductById(productId);
 
-    if( product )
+    if(product) {
       return successResponse(product);
-
+    }
 
     return successResponse( { message: "Product not found" }, 404 );
   } catch ( err ) {
     return errorResponse( err );
   }
 }
-

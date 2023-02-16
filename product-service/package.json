@@ -4,15 +4,21 @@
   "description": "Separated lambda functions acted like product microservice with serverless tool.",
   "type": "module",
   "main": "handler.js",
-   "engines": {
+  "engines": {
     "npm": ">=0.0.0 <10.0.0",
     "node": ">=18.0.0 <19.0.0"
   },
   "scripts": {
     "deploy": "sls deploy",
+    "resetDB": "node initDB",
     "clean": "sls remove",
     "test": "node --test"
   },
   "author": "Dmitrii Shikhaleev",
-  "license": "WTFPL"
+  "license": "WTFPL",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "pg": "^8.9.0",
+    "uuid": "^9.0.0"
+  }
 }

@@ -11,7 +11,7 @@ const errorResponse = ( error, statusCode = 500 ) => {
         headers: {
             ...defaultHeaders
         },
-        body: JSON.stringify( { message: err.message || 'Something went wrong !!!' })
+        body: JSON.stringify( { message: error.message || 'Something went wrong !!!' })
     }
 }
 
