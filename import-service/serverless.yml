@@ -1,0 +1,87 @@
+service: import-service
+frameworkVersion: '3'
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-central-1
+  stage: dev
+  httpApi:
+    cors: true
+  environment:
+    BUCKET: ${env:BUCKET}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - 's3:*'
+            - 's3-object-lambda:*'
+          Resource: '*'
+        # Allow functions to call CreateNetworkInterface on EC2 and connect to DB VPC
+        - Effect: Allow
+          Action:
+            - 'ec2:DescribeNetworkInterfaces'
+            - 'ec2:CreateNetworkInterface'
+            - 'ec2:DeleteNetworkInterface'
+            - 'ec2:DescribeInstances'
+            - 'ec2:AttachNetworkInterface'
+          Resource: '*'
+        # Allow putting files to s3 bucket
+        - Effect: Allow
+          Action:
+            - 's3:*'
+          Resource:
+            - arn:aws:s3:::${env:BUCKET}/*
+
+functions:
+  importProductsFile:
+    handler: handler.importProductsFile
+    events:
+      - http:
+          path: import
+          method: get
+          request:
+            parameters:
+              querystrings:
+                name: true
+  importFileParser:
+    handler: handler.importFileParser
+    events:
+      - s3:
+          bucket: ${env:BUCKET}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
+            - suffix: .csv
+          existing: true
+
+resources:
+  Resources:
+    ## Specifying the S3 Bucket
+    UploadS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${env:BUCKET}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedMethods:
+                - PUT
+              AllowedOrigins:
+                - "*"
+              AllowedHeaders:
+                - "*"
+
+    WebAppS3BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: UploadS3Bucket
+        PolicyDocument:
+          Statement:
+            - Sid: 'AllObjectActions'
+              Effect: Allow
+              Action: 's3:*'
+              Resource: arn:aws:s3:::${env:BUCKET}/*
+              Principal: '*'
