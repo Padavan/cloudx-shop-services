@@ -3,6 +3,7 @@ import pg from 'pg';
 import { getProductById as getProductByIdHandler } from './src/getProductById.js';
 import { getAllProducts as getAllProductsHandler } from './src/getAllProducts.js';
 import { createProduct as createProductHandler } from './src/createProduct.js';
+import { catalogBatchProcess as catalogBatchProcessHandler } from './src/catalogBatchProcess.js';
 import { DatabaseService } from './src/utils/db.js'
 dotenv.config();
 
@@ -19,6 +20,6 @@ const productService = new DatabaseService(dbClient)
 const getProductById = getProductByIdHandler(productService);
 const getAllProducts = getAllProductsHandler(productService);
 const createProduct = createProductHandler(productService);
+const catalogBatchProcess = catalogBatchProcessHandler(productService);
 
-export { ping } from './src/ping.js';
-export { getProductById, getAllProducts, createProduct };
+export { getProductById, getAllProducts, createProduct, catalogBatchProcess };

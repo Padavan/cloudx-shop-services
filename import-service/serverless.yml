@@ -11,6 +11,7 @@ provider:
     cors: true
   environment:
     BUCKET: ${env:BUCKET}
+    SQS_URL: ${env:SQS_URL}
   iam:
     role:
       statements:
@@ -34,6 +35,10 @@ provider:
             - 's3:*'
           Resource:
             - arn:aws:s3:::${env:BUCKET}/*
+        # Allow putting messages to sqs queues
+        - Effect: Allow
+          Action: sqs:*
+          Resource: arn:aws:sqs:eu-central-1:${aws:accountId}:catalogItemsQueue
 
 functions:
   importProductsFile:

@@ -1,8 +1,9 @@
 import csv from 'csv-parser';
 import { S3Client, AbortMultipartUploadCommand, GetObjectCommand, CopyObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { errorResponse, successResponse } from "./utils/response.js";
+import { sendToQueue } from './sendToQueue.js';
 
-const BUCKET = process.env.BUCKET;
+const BUCKET = process.env.BUCKET || 'test';
 const client = new S3Client({ region: "eu-central-1" });
 
 export const importFileParser = async (event) => {
@@ -11,7 +12,6 @@ export const importFileParser = async (event) => {
     const recordList = [];
     for await (const record of event.Records) {
       const objectKey = record.s3.object.key;
-      console.info('objectKey: ', record.s3.object);
 
       const getParams = {
         Bucket: BUCKET,
@@ -28,9 +28,9 @@ export const importFileParser = async (event) => {
           })
           .on('data', (data) => {
             console.info(data);
+            sendToQueue(data);
           })
           .on('end', (id) => {
-            console.info(`Copy from ${BUCKET}/${objectKey}`);
             resolve('success');
           });
       });
