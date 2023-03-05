@@ -14,6 +14,7 @@ provider:
     DB_NAME: ${env:DB_NAME}
     DB_USER: ${env:DB_USER}
     DB_SECRET: ${env:DB_SECRET}
+    PRODUCTS_TOPIC_ARN: ${env:PRODUCTS_TOPIC_ARN}
   vpc:
     securityGroupIds:
       - ${env:SG_ID}
@@ -32,14 +33,11 @@ provider:
             - 'ec2:DescribeInstances'
             - 'ec2:AttachNetworkInterface'
           Resource: '*'
+        - Effect: Allow
+          Action: sns:*
+          Resource: '*'
 
 functions:
-  ping:
-    handler: handler.ping
-    events:
-      - http:
-          path: products/ping
-          method: get
   getProductById:
     handler: handler.getProductById
     events:
@@ -63,4 +61,36 @@ functions:
           path: products
           method: post
           cors: true
+  catalogBatchProcess:
+    handler: handler.catalogBatchProcess
+    events:
+      - sqs:
+          batchSize: 5
+          arn:
+            Fn::GetAtt:
+              - SQSProductsQueue
+              - Arn
 
+# CloudFormation resources
+resources:
+  Resources:
+    ## SQS 
+    SQSProductsQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+          QueueName: 'catalogItemsQueue'
+
+    ## SNS
+    createProductTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        DisplayName: createProductTopic
+        TopicName: createProductTopic
+
+    createProductSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+          Endpoint: ${env:SNS_EMAIL}
+          Protocol: email
+          TopicArn:
+            Ref: createProductTopic

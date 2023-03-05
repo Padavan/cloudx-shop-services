@@ -7,6 +7,7 @@ export const getProductById = (dbService) => async (event) => {
 
     const product = await dbService.getProductById(productId);
 
+
     if(product) {
       return successResponse(product);
     }
