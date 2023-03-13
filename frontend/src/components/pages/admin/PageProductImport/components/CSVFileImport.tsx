@@ -33,13 +33,19 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
   };
 
   const uploadFile = async () => {
+    setError(null);
     if (!file) {
       return;
     }
 
     console.log("uploadFile to", url);
+    const authToken = localStorage.getItem('authorization_token');
+
 
     try {
+      if (!authToken) {
+        throw Error("Only logged user can import files");
+      }
       setInProgress(true);
       // Get the presigned URL
       const response = await axios({
@@ -47,13 +53,19 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
         params: {
           name: file.name,
         },
+        headers: {
+          "Access-Control-Allow-Headers": "Authorization, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Credentials, Access-Control-Request-Method, Access-Control-Request-Headers",
+          "Authorization": `Basic ${authToken}`,
+          "Access-Control-Request-Method": "GET,OPTIONS",
+          "Access-Control-Allow-Credentials": "true",
+          "Access-Control-Allow-Origin": "*.execute-api.eu-central-1.amazonaws.com",
+        },
       });
       console.log("File to upload: ", file.name);
       console.log("Uploading to: ", response.data);
       const s3url: string = response.data;
       const result = await fetch(s3url, {
         method: "PUT",
-        // headers: defaultHeaders,
         body: file,
       });
       console.log("Result: ", result);
@@ -104,7 +116,7 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
           </Button>
         </div>
       )}
-      {error && <span>{error.message}</span>}
+      {error && <span style={{ color: "#b20000"}}>{error.message}</span>}
     </Box>
   );
 }
