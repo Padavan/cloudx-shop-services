@@ -50,26 +50,39 @@ class DatabaseService {
         const selectedId = product.id;
 
         const query = {
-            text: `
-                UPDATE ${this.productTableName}
-                SET "title" = $1, "description" = $2, "price" = $3, "image" = $4
-                WHERE "id" = $5
-            `,
+            text: `UPDATE ${this.productTableName}
+                   SET "title" = $1, "description" = $2, "price" = $3, "image" = $4
+                   WHERE "id" = $5`,
             values: [product.title, product.description, product.price, product.image, selectedId],
         };
         const query2 = {
-            text: `
-                UPDATE ${this.stocksTableName}
-                SET "count"=$1
-                WHERE id=$2
-            `,
+            text: `UPDATE ${this.stocksTableName}
+                   SET "count"=$1
+                   WHERE "id" = $2`,
             values: [product.count, selectedId],
         };
 
         const result = await this.client.query(query);
         const result2 = await this.client.query(query2);
-        return result.rows[0] ? result.rows[0] : null;
+        return product;
     }
+
+    async deleteProductById(id) {
+        const query = {
+            text: `DELETE FROM ${this.productTableName} WHERE "id" = $1`,
+            values: [id],
+        };
+
+        const query2 = {
+            text: `DELETE FROM ${this.stocksTableName} WHERE "id" = $1`,
+            values: [id],
+        }
+
+        const result = await  this.client.query(query);
+        const result2 = await this.client.query(query2);
+        if (result && result2) return 'ok'
+        return null;
+    };
 }
 
 export { DatabaseService };

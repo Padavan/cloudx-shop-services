@@ -15,13 +15,13 @@
   "author": "Dmitrii Shikhaleev",
   "license": "WTFPL",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.276.0",
-    "@aws-sdk/client-sqs": "^3.282.0",
-    "@aws-sdk/s3-request-presigner": "^3.276.0",
     "csv-parser": "^3.0.0",
     "dotenv": "^16.0.3"
   },
   "devDependencies": {
+    "@aws-sdk/client-s3": "^3.289.0",
+    "@aws-sdk/client-sqs": "^3.289.0",
+    "@aws-sdk/s3-request-presigner": "^3.289.0",
     "aws-sdk-client-mock": "^2.0.1"
   }
 }
