@@ -51,6 +51,10 @@ functions:
             parameters:
               querystrings:
                 name: true
+          authorizer:
+            arn: arn:aws:lambda:eu-central-1:${aws:accountId}:function:authorization-service-dev-basicAuthorizer
+            type: token
+            resultTtlInSeconds: 0
   importFileParser:
     handler: handler.importFileParser
     events:

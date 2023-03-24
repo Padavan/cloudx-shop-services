@@ -1,8 +1,16 @@
 import { errorResponse, successResponse } from "./utils/response.js";
 
 export const createProduct = (dbClient) => async (event) => {
+  const requestProduct = JSON.parse(event.body);
   try {
-    const product = await dbClient.createProduct(JSON.parse(event.body));
+
+    let product;
+    if (requestProduct.id) {
+      product = await dbClient.updateProduct(requestProduct);
+    } else {
+      product = await dbClient.createProduct(requestProduct);
+    }
+
 
     if(product) {
       return successResponse(product);

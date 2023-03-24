@@ -45,6 +45,31 @@ class DatabaseService {
         const result2 = await this.client.query(query2);
         return result.rows[0] ? result.rows[0] : null;
     }
+
+    async updateProduct(product) {
+        const selectedId = product.id;
+
+        const query = {
+            text: `
+                UPDATE ${this.productTableName}
+                SET "title" = $1, "description" = $2, "price" = $3, "image" = $4
+                WHERE "id" = $5
+            `,
+            values: [product.title, product.description, product.price, product.image, selectedId],
+        };
+        const query2 = {
+            text: `
+                UPDATE ${this.stocksTableName}
+                SET "count"=$1
+                WHERE id=$2
+            `,
+            values: [product.count, selectedId],
+        };
+
+        const result = await this.client.query(query);
+        const result2 = await this.client.query(query2);
+        return result.rows[0] ? result.rows[0] : null;
+    }
 }
 
 export { DatabaseService };

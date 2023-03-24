@@ -1,0 +1,20 @@
+{
+  "name": "authorization-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "type": "module",
+  "engines": {
+    "npm": ">=0.0.0 <10.0.0",
+    "node": ">=18.0.0 <19.0.0"
+  },
+  "scripts": {
+    "start": "node handler.js",
+    "test": "node --test"
+  },
+  "author": "Dmitrii Shikhaleev",
+  "license": "WTFPL",
+  "dependencies": {
+    "dotenv": "^16.0.3"
+  }
+}
