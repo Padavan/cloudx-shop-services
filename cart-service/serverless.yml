@@ -1,0 +1,44 @@
+service: cart-service
+frameworkVersion: '3'
+useDotenv: true
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-central-1
+  stage: dev
+  environment:
+    DB_HOST: ${env:DB_HOST}
+    DB_NAME: ${env:DB_NAME}
+    DB_USERNAME: ${env:DB_USERNAME}
+    DB_PASSWORD: ${env:DB_PASSWORD}
+  vpc:
+    securityGroupIds:
+      - ${env:SG_ID}
+    subnetIds:
+      - ${env:SUBNET_ID_1}
+      - ${env:SUBNET_ID_2}
+  iam:
+    role:
+      statements:
+        # Allow functions to call CreateNetworkInterface on EC2 and connect to DB VPC
+        - Effect: Allow
+          Action:
+            - 'ec2:DescribeNetworkInterfaces'
+            - 'ec2:CreateNetworkInterface'
+            - 'ec2:DeleteNetworkInterface'
+            - 'ec2:DescribeInstances'
+            - 'ec2:AttachNetworkInterface'
+          Resource: '*'
+
+functions:
+  main:
+    handler: dist/main.handler
+    events:
+      - http:
+         method: any
+         path: /{any+}
+         cors: true

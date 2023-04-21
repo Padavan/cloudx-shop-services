@@ -44,16 +44,30 @@ functions:
       - http:
           path: products/{productId}
           method: get
+          cors: true
           request:
             parameters:
               paths:
                 productId: true
+  deleteProductById:
+    handler: handler.deleteProductById
+    events:
+      - http:
+          path: products/{productId}
+          method: delete
+          cors: true
+          request:
+            parameters:
+              paths:
+                productId: true
+
   getAllProducts:
     handler: handler.getAllProducts
     events:
       - http:
           path: products
           method: get
+          cors: true
   createProduct:
     handler: handler.createProduct
     events:

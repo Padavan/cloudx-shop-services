@@ -5,7 +5,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { formatAsPrice } from "~/utils/utils";
-import AddProductToCart from "~/components/AddProductToCart/AddProductToCart";
+import { AddProductToCart } from "~/components/AddProductToCart/AddProductToCart";
 import { useAvailableProducts } from "~/queries/products";
 
 export default function Products() {
@@ -35,7 +35,7 @@ export default function Products() {
               <Typography>{formatAsPrice(product.price / 100)}</Typography>
             </CardContent>
             <CardActions>
-              <AddProductToCart product={product} />
+              <AddProductToCart productId={product.id as string} />
             </CardActions>
           </Card>
         </Grid>

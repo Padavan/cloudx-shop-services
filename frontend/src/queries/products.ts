@@ -55,14 +55,14 @@ export function useUpsertAvailableProduct() {
       // },
     });
   });
-}
+} 
 
 export function useDeleteAvailableProduct() {
   return useMutation((id: string) =>
-    axios.delete(`${API_PATHS.bff}/product/${id}`, {
-      headers: {
-        Authorization: `Basic ${localStorage.getItem("authorization_token")}`,
-      },
+    axios.delete(`${API_PATHS.bff}/products/${id}`, {
+      // headers: {
+      //   Authorization: `Basic ${localStorage.getItem("authorization_token")}`,
+      // },
     })
   );
 }

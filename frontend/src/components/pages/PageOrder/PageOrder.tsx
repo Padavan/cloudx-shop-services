@@ -56,15 +56,15 @@ export default function PageOrder() {
   const { mutateAsync: updateOrderStatus } = useUpdateOrderStatus();
   const invalidateOrder = useInvalidateOrder();
   const cartItems: CartItem[] = React.useMemo(() => {
-    if (order && products) {
-      return order.items.map((item: OrderItem) => {
-        const product = products.find((p) => p.id === item.productId);
-        if (!product) {
-          throw new Error("Product not found");
-        }
-        return { product, count: item.count };
-      });
-    }
+    // if (order && products) {
+    //   return order.items.map((item: OrderItem) => {
+    //     const product = products.find((p) => p.id === item.productId);
+    //     if (!product) {
+    //       throw new Error("Product not found");
+    //     }
+    //     return { product, count: item.count };
+    //   });
+    // }
     return [];
   }, [order, products]);
 

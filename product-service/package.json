@@ -15,9 +15,11 @@
   "author": "Dmitrii Shikhaleev",
   "license": "WTFPL",
   "dependencies": {
-    "@aws-sdk/client-sns": "^3.282.0",
     "dotenv": "^16.0.3",
     "pg": "^8.9.0",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-sns": "^3.298.0"
   }
 }
